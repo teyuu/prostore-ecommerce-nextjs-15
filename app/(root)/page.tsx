@@ -3,9 +3,9 @@ import { getLatestProducts } from "@/lib/actions/product.actions";
 
 export default async function HomePage() {
   const  latestProducts = await getLatestProducts()
-  console.log(latestProducts[0].price)
+ 
   return (
-    <div className="w-full">
+    <div>
       <ProductList
         data={latestProducts}
         title="Newest arrival"
