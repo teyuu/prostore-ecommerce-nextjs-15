@@ -3,8 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import ProductImages from "@/components/shared/products/product-images";
+import AddToCart from "@/components/shared/products/add-to-cart";
+import { getMyCart } from "@/lib/actions/cart.actions";
 
 export default async function ProductsDetails(props: {
   params: Promise<{ slug: string }>;
@@ -12,14 +13,17 @@ export default async function ProductsDetails(props: {
   const { slug } = await props.params;
   const product = await getProductBySlug(slug);
 
+
   if (!product) notFound();
+
+  const cart = await getMyCart()
 
   return (
     <section>
       <div className="grid grid-cols-1 lg:grid-cols-5">
         {/* Images Column */}
         <div className="col-span-2">
-            <ProductImages images={product.images}/>
+          <ProductImages images={product.images} />
         </div>
         {/* Details Column */}
         <div className="col-span-2 p-5">
@@ -44,9 +48,9 @@ export default async function ProductsDetails(props: {
           </div>
         </div>
         {/* Action Column */}
-        <div >
+        <div>
           <Card>
-            <CardContent >
+            <CardContent>
               <div className="mb-2 flex justify-between ">
                 <div>Price</div>
                 <div>
@@ -63,7 +67,17 @@ export default async function ProductsDetails(props: {
               </div>
               {product.stock > 0 && (
                 <div className="flex-center">
-                  <Button className="w-full mt-2">Add To Cart</Button>
+                  <AddToCart
+                  cart={cart}
+                    item={{
+                      productId: product.id,
+                      name: product.name,
+                      slug: product.slug,
+                      price: product.price,
+                      quantity:1,
+                      image: product.images![0],
+                    }}
+                  />
                 </div>
               )}
             </CardContent>
